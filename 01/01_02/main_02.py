@@ -37,6 +37,7 @@ index_list = [
 file_path = Path("/home/empi/Advent_of_Code_2023/01/01_01/puzzle_input")
 
 with file_path.open(mode="r", encoding="utf-8") as file:
+    score = 0
     for line in file:
         first_index = [-1, -1]
         last_index = [-1, -1]
@@ -52,8 +53,12 @@ with file_path.open(mode="r", encoding="utf-8") as file:
                     last_index = [position, len(index)]
 
         line = line[first_index[0]:first_index[0] + first_index[1]] + line[last_index[0]:last_index[0] + last_index[1]]
-
-
-
         print(line)
-        print("____________")
+        print("________")
+        for key, value in letters_dict.items():
+            line = re.sub(key, str(value), line)
+
+
+        # value = int(line[0]) * 10 + int(line[1])
+        # score += value
+    #print(score)

@@ -50,7 +50,7 @@ def check_number(table, score):
                     if char.isdigit():
                         bottom = True
 
-            if (top + bottom + prev + next) >= 2:
+            if (top + bottom + prev + next) == 2:
                 #score += int(match.group())
                 numbers.append(match.group())
                 print(match.span(), line)

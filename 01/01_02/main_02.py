@@ -35,7 +35,6 @@ index_list = [
 ]
 
 
-
 file_path = Path("/home/empi/Advent_of_Code_2023/01/01_01/puzzle_input")
 
 with file_path.open(mode="r", encoding="utf-8") as file:

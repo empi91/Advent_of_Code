@@ -1,25 +1,26 @@
 from pathlib import Path
 import re
+import os
 
-file_path = Path("/home/empi/Advent_of_Code_2023/04/04_01/puzzle_input")
+file_path_original = Path("/home/empi/Advent_of_Code_2023/04/04_01/puzzle_input")
 
 score = 0
 copies_number = []
 cards = []
 
-with file_path.open(mode="r", encoding="utf-8") as file:
+with file_path_original.open(mode="r", encoding="utf-8") as file:
     for line in file:
         card_no = 0
         card_value = 0
         card_winning = []
         card_numbers = []
         line = re.sub("\n", "", line)
+        line = re.sub(r'\s{2,3}', " ", line)
         sliced_line = re.split(r'[:|]', line)
         for count, part in enumerate(sliced_line):
             if count == 0:
-                for char in part:
-                    if char.isdigit():
-                        card_no = int(char)
+                part = re.sub(r'\D', '', part)
+                card_no = int(part)
             elif count == 1:
                 win_numbers = re.split(" ", part)
                 for num in win_numbers:
@@ -33,21 +34,15 @@ with file_path.open(mode="r", encoding="utf-8") as file:
         for number in card_winning:
             if number in card_numbers:
                 card_value += 1
-        copies_number.append([card_no, card_value])
+        copies_number.append([card_no, card_value, 1])
         cards.append(line)
-print(copies_number)
-# print(cards)
 
-for item in copies_number:
-    for i in range(1, item[1] + 1):
-        card_name = "Card " + str(item[0] + i)
-        for sequence in cards:
-            if re.match(card_name, sequence):
-                index = cards.index(sequence)
-                cards.insert(index, sequence)
-                break
+for card in copies_number:
+    for i in range(card[0], card[0] + card[1], 1):
+        copies_number[i][2] += 1 * card[2]
 
+score = 0
+for card in copies_number:
+    score += card[2]
 
-for item in cards:
-    print(item)
-print(len(cards))
+print(score)

@@ -11,39 +11,41 @@ with file_path.open(mode="r", encoding="utf-8") as file:
         line.append("0")
         hands.append(line)
 
+char_order = ('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2')
+
 
 def check_hand_type(hand):
-    if check_how_many_card_identical(hand):
-        type = five_of_a_kind
-    elif four_the_same:
-        type = four_of_a_kind
-    elif three_the_same and two_the_same:
-        type = full_house
-    elif two_the_same and two_the_same:
-        type = two_pair
-    elif two_the_same:
-        type = one_pair
-    elif all_cards_distinct:
-        type = high_card
-
+    check_how_many_card_identical(hand)
+    print(hand[0])
+    if hand[2] == 7:
+        print("five_of_a_kind")
+    elif hand[2] == 6:
+        print("four_of_a_kind")
+    elif hand[2] == 5:
+        print("full_house")
+    elif hand[2] == 4:
+        print("three_of_kind")
+    elif hand[2] == 3:
+        print("two_pair")
+    elif hand[2] == 2:
+        print("one_pair")
+    elif hand[2] == 1:
+        print("high_card")
     return 0
 
 
 def check_how_many_card_identical(hand):
     is_five = False
     is_four = False
-    is_full_house = False
     is_three = False
     is_two = False
+    is_second_two = False
     is_one = False
-    is_high = False
 
     symbols_in_hand = []
-    print(hand[0])
     # Split hand into separate symbols
     for char in hand[0]:
         symbols_in_hand.append([char, 0])
-    print(symbols_in_hand)
 
     # Count how many times each symbol is present in hand
     for symbol in symbols_in_hand:
@@ -52,8 +54,8 @@ def check_how_many_card_identical(hand):
     # Remove duplicates
     unique_symbols_in_hand = []
     [unique_symbols_in_hand.append(x) for x in symbols_in_hand if x not in unique_symbols_in_hand]
-    print(unique_symbols_in_hand)
 
+    # Check how many card identical
     for symbol in unique_symbols_in_hand:
         if symbol[1] == 5:
             is_five = True
@@ -61,11 +63,51 @@ def check_how_many_card_identical(hand):
             is_four = True
         elif symbol[1] == 3:
             is_three = True
+        elif symbol[1] == 2 and not is_two:
+            is_two = True
+        elif symbol[1] == 2 and is_two:
+            is_second_two = True
+        elif symbol[1] == 1:
+            is_one = True
 
+    if is_five:
+        hand[2] = 7
+    elif is_four:
+        hand[2] = 6
+    elif is_three and is_two:
+        hand[2] = 5
+    elif is_three:
+        hand[2] = 4
+    elif is_two and is_second_two:
+        hand[2] = 3
+    elif is_two:
+        hand[2] = 2
+    if is_one and (is_five + is_four + is_three + is_two) == 0:
+        hand[2] = check_order(hand)
     return 0
 
 
-def check_hand_strength(hand):
+def check_order(hand):
+    first_char = hand[0][0]
+    if first_char in char_order:
+        index = char_order.index(first_char)
+        if index > 9:
+            return 0
+        else:
+            for i in range(1, 5):
+                char = hand[0][i]
+                next_char = char_order[index + i]
+                if char != next_char:
+                    return 0
+            return 1
+    return 0
+
+def check_hand_strength(first_hand, second_hand):
+    # Jeżeli 1 ręka silniejsza return 1
+    # jeżeli druga return 0
+
+    for i in range(5):
+        
 
     return 0
 
@@ -76,13 +118,13 @@ def hands_sort(all_hands):
     while not is_sorted:
         changed = 0
         for i in range(length - 1):
-            if check_hand_type(all_hands[i]) > check_hand_type(all_hands[i + 1]):
+            if all_hands[i][2] > all_hands[i + 1][2]:
                 temp = all_hands[i + 1]
                 all_hands[i] = all_hands[i + 1]
                 all_hands[i + 1] = temp
                 changed = 1
-            elif check_hand_type(all_hands[i]) == check_hand_type(all_hands[i + 1]):
-                if check_hand_strength(all_hands[i]) > check_hand_strength(all_hands[i + 1]):
+            elif all_hands[i][2] == all_hands[i + 1][2]:
+                if check_hand_strength(all_hands[i], all_hands[i]):
                     temp = all_hands[i + 1]
                     all_hands[i] = all_hands[i + 1]
                     all_hands[i + 1] = temp
@@ -92,4 +134,7 @@ def hands_sort(all_hands):
     return 0
 
 
-hands_sort(hands)
+for hand in hands:
+    check_how_many_card_identical(hand)
+
+# hands_sort(hands)

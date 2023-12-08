@@ -11,7 +11,7 @@ with file_path.open(mode="r", encoding="utf-8") as file:
         line.append("0")
         hands.append(line)
 
-char_order = ('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2')
+char_order = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 
 
 def check_hand_type(hand):
@@ -102,14 +102,13 @@ def check_order(hand):
             return 1
     return 0
 
+
 def check_hand_strength(first_hand, second_hand):
-    # Jeżeli 1 ręka silniejsza return 1
-    # jeżeli druga return 0
     for i in range(5):
-        first = first_hand[i]
-        second = second_hand[i]
+        first = first_hand[0][i]
+        second = second_hand[0][i]
         first_index = char_order.index(first)
-        second_index = char_order(second)
+        second_index = char_order.index(second)
         if first_index < second_index:
             return 1
         elif first_index > second_index:
@@ -118,20 +117,23 @@ def check_hand_strength(first_hand, second_hand):
             continue
     return None
 
+
 def hands_sort(all_hands):
     length = len(all_hands)
     is_sorted = False
     while not is_sorted:
         changed = 0
         for i in range(length - 1):
+            ita = all_hands[i]
+            ita_plus_one = all_hands[i + 1]
             if all_hands[i][2] > all_hands[i + 1][2]:
-                temp = all_hands[i + 1]
+                temp = all_hands[i]
                 all_hands[i] = all_hands[i + 1]
                 all_hands[i + 1] = temp
                 changed = 1
             elif all_hands[i][2] == all_hands[i + 1][2]:
-                if check_hand_strength(all_hands[i], all_hands[i]):
-                    temp = all_hands[i + 1]
+                if check_hand_strength(all_hands[i], all_hands[i + 1]):
+                    temp = all_hands[i]
                     all_hands[i] = all_hands[i + 1]
                     all_hands[i + 1] = temp
                     changed = 1
@@ -142,10 +144,8 @@ def hands_sort(all_hands):
 
 def count_score(all_hands):
     score = 0
-    length = len(all_hands)
-    for hand in all_hands:
-        score += hand[1] * length
-        length -= 1
+    for rank, hand in enumerate(all_hands):
+        score += int(hand[1]) * (rank + 1)
     print(score)
     
 

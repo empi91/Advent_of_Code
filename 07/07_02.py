@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 
-file_path = Path.cwd() / "puzzle_input"
+file_path = Path("/home/empi/Advent_of_Code_2023/07/puzzle_input")
 hands = []
 
 with file_path.open(mode="r", encoding="utf-8") as file:
@@ -11,7 +11,7 @@ with file_path.open(mode="r", encoding="utf-8") as file:
         line.append("0")
         hands.append(line)
 
-char_order = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+char_order = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J']
 
 
 def check_hand_type(hand):
@@ -41,11 +41,13 @@ def check_how_many_card_identical(hand):
     is_two = False
     is_second_two = False
     is_one = False
+    is_one_j = False
+    is_two_j = False
 
     symbols_in_hand = []
     # Split hand into separate symbols
     for char in hand[0]:
-        symbols_in_hand.append([char, 0])
+        symbols_in_hand.append([char, 0, 0])
 
     # Count how many times each symbol is present in hand
     for symbol in symbols_in_hand:
@@ -57,6 +59,7 @@ def check_how_many_card_identical(hand):
 
     # Check how many card identical
     for symbol in unique_symbols_in_hand:
+        # print(symbol[0])
         if symbol[1] == 5:
             is_five = True
         elif symbol[1] == 4:
@@ -69,20 +72,42 @@ def check_how_many_card_identical(hand):
             is_second_two = True
         elif symbol[1] == 1:
             is_one = True
+        if symbol[0] == "J" and symbol[1] == 1:
+            is_one_j = True
+        elif symbol[0] == "J" and symbol[1] == 2:
+            is_two_j = True
 
     if is_five:
         hand[2] = 7
+    elif is_four and is_one_j:
+        hand[2] = 7
     elif is_four:
+        hand[2] = 6
+    elif is_three and is_two and is_two_j:
+        hand[2] = 7
+    elif is_three and is_two and is_one_j:
         hand[2] = 6
     elif is_three and is_two:
         hand[2] = 5
+    elif is_three and is_one_j:
+        hand[2] = 6
+    elif is_three and is_two_j:
+        hand[2] = 7
     elif is_three:
         hand[2] = 4
+    elif is_two and is_second_two and is_two_j:
+        hand[2] = 6
+    elif is_two and is_second_two and is_one_j:
+        hand[2] = 5
     elif is_two and is_second_two:
         hand[2] = 3
+    elif is_two and is_one_j:
+        hand[2] = 4
     elif is_two:
         hand[2] = 2
-    if is_one and (is_five + is_four + is_three + is_two) == 0:
+    if is_one and (is_five + is_four + is_three + is_two) == 0 and is_one_j:
+        hand[2] = check_almost_order(hand)
+    elif is_one and (is_five + is_four + is_three + is_two) == 0:
         hand[2] = check_order(hand)
     return 0
 
@@ -102,6 +127,60 @@ def check_order(hand):
             return 1
     return 0
 
+
+def check_almost_order(hand):
+    first_char = str(hand[0][0])
+    if first_char != "J":
+        if first_char in char_order:
+            index = char_order.index(first_char)
+            if index > 9:
+                return 0
+            else:
+                for i in range(1, 5):
+                    char = hand[0][i]
+                    next_char = char_order[index + i]
+                    if char != next_char and char != char_order[12]:
+                        return 0
+                return 1
+    else:
+        second_char = hand[0][1]
+        if second_char in char_order:
+            index = char_order.index(second_char )
+            for i in range(1, 5):
+                char = hand[0][i]
+                next_char = char_order[index + i - 1]
+                if char != next_char and char != char_order[12]:
+                    return 0
+            return 1
+    return 0
+
+
+
+# def check_almost_order(hand):
+#
+#     if j_index == 0:
+#         working_index = char_order.index(hand[0][1])
+#         for i in range(1, 4):
+#             if hand[0][1 + i] != char_order[working_index + 1]:
+#                 return 0
+#         return 1
+#     elif j_index == 1:
+#         working_index = char_order.index(hand[0][0])
+#
+#         return 1
+#     elif j_index == 2:
+#         working_index = char_order.index(hand[0][0])
+#
+#         return 1
+#     elif j_index == 3:
+#         working_index = char_order.index(hand[0][0])
+#
+#         return 1
+#     elif j_index == 4:
+#         working_index = char_order.index(hand[0][0])
+#
+#         return 1
+#     return 0
 
 def check_hand_strength(first_hand, second_hand):
     for i in range(5):

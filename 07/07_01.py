@@ -105,12 +105,18 @@ def check_order(hand):
 def check_hand_strength(first_hand, second_hand):
     # Jeżeli 1 ręka silniejsza return 1
     # jeżeli druga return 0
-
     for i in range(5):
-        
-
-    return 0
-
+        first = first_hand[i]
+        second = second_hand[i]
+        first_index = char_order.index(first)
+        second_index = char_order(second)
+        if first_index < second_index:
+            return 1
+        elif first_index > second_index:
+            return 0
+        elif first_index == second_index:
+            continue
+    return None
 
 def hands_sort(all_hands):
     length = len(all_hands)
@@ -134,7 +140,17 @@ def hands_sort(all_hands):
     return 0
 
 
+def count_score(all_hands):
+    score = 0
+    length = len(all_hands)
+    for hand in all_hands:
+        score += hand[1] * length
+        length -= 1
+    print(score)
+    
+
 for hand in hands:
     check_how_many_card_identical(hand)
 
-# hands_sort(hands)
+hands_sort(hands)
+count_score(hands)

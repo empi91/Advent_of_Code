@@ -3,15 +3,15 @@ import re
 
 file_path= Path.cwd() / "puzzle_input"
 history_data = []
+final_score = 0
 
 
 def calc_next_row(row):
-    next_row = []
-    length = len(history)
+    next = []
+    length = len(row)
     for i in range(length - 1):
-        next_row.append(int(history[i + 1]) - int(history[i]))
-
-    return next_row
+        next.append(int(row[i + 1]) - int(row[i]))
+    return next
 
 
 with file_path.open(mode="r", encoding="utf-8") as file:
@@ -20,19 +20,24 @@ with file_path.open(mode="r", encoding="utf-8") as file:
         line = re.split(" ", line)
         history_data.append(line)
 
-print(history_data)
-
 for history in history_data:
     is_zeroed = False
+    extr_value = int(history[-1])
     next_row = calc_next_row(history)
-
+    extr_value += next_row[-1]
     while not is_zeroed:
+        # print(next_row)
         if sum(next_row) == 0:
             is_zeroed = True
         else:
             next_row = calc_next_row(next_row)
+            extr_value += next_row[-1]
+    final_score += extr_value
+print(final_score)
 
-    print(sum(next_row))
+
+
+
 
 
 

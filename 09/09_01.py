@@ -27,20 +27,21 @@ for history in history_data:
     next_row = calc_next_row(history)
     extr_value += next_row[-1]
     while not is_zeroed:
+        only_zeroes = True
         print(next_row)
-        if sum(next_row) == 0:
+        for char in next_row:
+            if char != 0:
+                only_zeroes = False
+        if sum(next_row) == 0 and only_zeroes:
             is_zeroed = True
         else:
             next_row = calc_next_row(next_row)
             extr_value += next_row[-1]
+
     final_score += extr_value
     print(extr_value)
     print("___________")
 print(final_score)
-
-
-
-
 
 
 

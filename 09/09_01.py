@@ -23,16 +23,19 @@ with file_path.open(mode="r", encoding="utf-8") as file:
 for history in history_data:
     is_zeroed = False
     extr_value = int(history[-1])
+    print(history)
     next_row = calc_next_row(history)
     extr_value += next_row[-1]
     while not is_zeroed:
-        # print(next_row)
+        print(next_row)
         if sum(next_row) == 0:
             is_zeroed = True
         else:
             next_row = calc_next_row(next_row)
             extr_value += next_row[-1]
     final_score += extr_value
+    print(extr_value)
+    print("___________")
 print(final_score)
 
 

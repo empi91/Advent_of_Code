@@ -6,51 +6,36 @@ file_path = Path.cwd() / "puzzle_input"
 pipes = []
 path_length = []
 
+symbols_north = ["|", "7", "F"]
+symbols_south = ["|", "L", "J"]
+symbols_west = ["-", "L", "F"]
+symbols_east = ["-", "J", "7"]
+
 counter = 0
 
 is_finished = False
 
 
-def north_south():
-    print("North-South")
+def check_symbol_around(row, index, count, direction):
+    # symbol = pipes[row][index]
+    symbol = path_length[row][index]
+    if direction == "north":
+        if symbol in symbols_north:
+            path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
+            # print(f"North would be replaced with {counter}")
+    elif direction == "south":
+        if symbol in symbols_south:
+            path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
+            # print(f"South would be replaced with {counter}")
+    elif direction == "west":
+        if symbol in symbols_west:
+            path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
+            # print(f"West would be replaced with {counter}")
+    elif direction == "east":
+        if symbol in symbols_east:
+            path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
+            # print(f"East would be replaced with {counter}")
     return 0
-def east_west():
-    print("East-West")
-
-    return 0
-def north_east():
-
-    return 0
-def north_west():
-
-    return 0
-def south_west():
-
-    return 0
-def south_east():
-
-    return 0
-def ground():
-    print("Ground")
-    return 0
-
-
-def check_symbol_around(symbol):
-    for key, value in pipes_dict.items():
-        if symbol == key:
-            pipes_dict[key]()
-    return 0
-
-
-pipes_dict = {
-    "|": north_south,
-    "-": east_west,
-    "L": north_east,
-    "J": north_west,
-    "7": south_west,
-    "F": south_east,
-    ".": ground,
-}
 
 
 with file_path.open(mode="r", encoding="utf-8") as file:
@@ -71,20 +56,14 @@ while not is_finished:
                     starting_point.append([path_length.index(line), line.index(char)])
 
     for item in starting_point:
-        point_north = path_length[item[0] - 1][item[1]]
-        point_south = path_length[item[0] + 1][item[1]]
-        point_west = path_length[item[0]][item[1] - 1]
-        point_east = path_length[item[0]][item[1] + 1]
-
-        check_symbol_around(point_north)
-        check_symbol_around(point_south)
-        check_symbol_around(point_east)
-        check_symbol_around(point_west)
+        check_symbol_around(item[0] - 1, item[1], counter, "north")
+        check_symbol_around(item[0] + 1, item[1], counter, "south")
+        check_symbol_around(item[0], item[1] - 1, counter, "west")
+        check_symbol_around(item[0], item[1] + 1, counter, "east")
 
     counter += 1
-    is_finished = True
+    if counter == 5:
+        is_finished = True
 
-
-print(f" {point_north}")
-print(f"{point_west} {point_east}")
-print(f" {point_south}")
+for line in path_length:
+    print(line)

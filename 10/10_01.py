@@ -17,25 +17,24 @@ is_finished = False
 
 
 def check_symbol_around(row, index, count, direction):
-    # symbol = pipes[row][index]
     symbol = path_length[row][index]
     if direction == "north":
         if symbol in symbols_north:
             path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
-            # print(f"North would be replaced with {counter}")
+            return True
     elif direction == "south":
         if symbol in symbols_south:
             path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
-            # print(f"South would be replaced with {counter}")
+            return True
     elif direction == "west":
         if symbol in symbols_west:
             path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
-            # print(f"West would be replaced with {counter}")
+            return True
     elif direction == "east":
         if symbol in symbols_east:
             path_length[row] = path_length[row][:index] + str(counter + 1) + path_length[row][index + 1:]
-            # print(f"East would be replaced with {counter}")
-    return 0
+            return True
+    return False
 
 
 with file_path.open(mode="r", encoding="utf-8") as file:
@@ -48,22 +47,51 @@ path_length = [item.replace("S", "0") for item in path_length]
 
 while not is_finished:
     starting_point = []
+    was_changed = []
 
     for line in path_length:
         for char in line:
             if char.isdigit():
-                if int(char) == counter:
-                    starting_point.append([path_length.index(line), line.index(char)])
+                if counter != 7:
+                    if int(char) == counter:
+                        starting_point.append([path_length.index(line), line.index(char)])
+                if counter == 7:
+                    if int(char) == counter and pipes[path_length.index(line)][line.index(char)] == "7":
+                        starting_point.append([path_length.index(line), line.index(char)])
+                    else:
+                        continue
 
     for item in starting_point:
-        check_symbol_around(item[0] - 1, item[1], counter, "north")
-        check_symbol_around(item[0] + 1, item[1], counter, "south")
-        check_symbol_around(item[0], item[1] - 1, counter, "west")
-        check_symbol_around(item[0], item[1] + 1, counter, "east")
+        if item[0] == 0:
+            #dont check north
+            was_changed.append(check_symbol_around(item[0] + 1, item[1], counter, "south"))
+            was_changed.append(check_symbol_around(item[0], item[1] - 1, counter, "west"))
+            was_changed.append(check_symbol_around(item[0], item[1] + 1, counter, "east"))
+        elif item[0] == len(path_length) - 1:
+            #dont check south
+            was_changed.append(check_symbol_around(item[0] - 1, item[1], counter, "north"))
+            was_changed.append(check_symbol_around(item[0], item[1] - 1, counter, "west"))
+            was_changed.append(check_symbol_around(item[0], item[1] + 1, counter, "east"))
+        elif item[1] == 0:
+            #dont check west
+            was_changed.append(check_symbol_around(item[0] - 1, item[1], counter, "north"))
+            was_changed.append(check_symbol_around(item[0] + 1, item[1], counter, "south"))
+            was_changed.append(check_symbol_around(item[0], item[1] + 1, counter, "east"))
+        elif item[1] == len(path_length[0]) - 1:
+            #dont check east
+            was_changed.append(check_symbol_around(item[0] - 1, item[1], counter, "north"))
+            was_changed.append(check_symbol_around(item[0] + 1, item[1], counter, "south"))
+            was_changed.append(check_symbol_around(item[0], item[1] - 1, counter, "west"))
+        else:
+            was_changed.append(check_symbol_around(item[0] - 1, item[1], counter, "north"))
+            was_changed.append(check_symbol_around(item[0] + 1, item[1], counter, "south"))
+            was_changed.append(check_symbol_around(item[0], item[1] - 1, counter, "west"))
+            was_changed.append(check_symbol_around(item[0], item[1] + 1, counter, "east"))
 
     counter += 1
-    if counter == 5:
+    if sum(was_changed) == 0:
         is_finished = True
+        print(f"Score: {counter - 1}")
 
-for line in path_length:
-    print(line)
+# for line in path_length:
+#     print(line)

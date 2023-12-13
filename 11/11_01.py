@@ -5,11 +5,7 @@ import re
 file_path = Path.cwd() / "puzzle_input"
 
 data = []
-row_indexes = []
-data_numbers = []
-galaxy_indexes = []
-
-counter = 1
+numbered_grid = []
 
 
 def extend_rows(grid):
@@ -24,20 +20,18 @@ def extend_rows(grid):
     return 0
 
 
-def extend_columns(map, extended_map):
-    ext_row_no = len(extended_map)
-
-    for i in range(len(map[0])):
-        is_empty = True
-        for j in range(len(map)):
-            if map[j][i] == "#":
-                is_empty = False
-                break
-        if is_empty:
-            for j in range(ext_row_no):
-                print(f"{j}, {i}")
-                # extended_map[j] = extended_map[j][:i] + "." + extended_map[j][i:]
-    return 0
+def replace_hash(grid, numbered_grid):
+    counter = 1
+    for row in grid:
+        new_row = ""
+        for char in row:
+            if char == "#":
+                new_row += str(counter)
+                counter += 1
+            else:
+                new_row += char
+        numbered_grid.append(new_row)
+    return counter
 
 
 with file_path.open(mode="r", encoding="utf-8") as file:
@@ -45,21 +39,10 @@ with file_path.open(mode="r", encoding="utf-8") as file:
         data.append(list(line.strip()))
 
 extend_rows(data)
-data_numbers = copy.deepcopy(data)
-extend_columns(data, data_numbers)
+transposed_list = list(map(list, zip(*data)))
+extend_rows(transposed_list)
+grid = list(map(list, zip(*transposed_list)))
+counter = replace_hash(grid, numbered_grid)
 
-# for row in data:
-#     new_row = ""
-#     for char in row:
-#         if char == "#":
-#             new_row += str(counter)
-#             counter += 1
-#         else:
-#             new_row += char
-#     data_numbers.append(new_row)
-
-
-
-print("____")
-for line in data:
+for line in numbered_grid:
     print(line)

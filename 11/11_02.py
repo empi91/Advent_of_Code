@@ -1,6 +1,6 @@
 from pathlib import Path
 
-file_path = Path.cwd() / "puzzle_input"
+file_path = Path("/home/empi/Advent_of_Code_2023/11/puzzle_input")
 
 data = []
 galaxies_coords = []
@@ -34,6 +34,7 @@ def check_galaxy_coordinates(galaxy):
         for item in row:
             if str(item).isdigit():
                 galaxies_coords.append([galaxy.index(row), row.index(item)])
+                print(f"Row: {galaxy.index(row)} and column: {row.index(item)}")
 
     return 0
 
@@ -50,6 +51,7 @@ def calc_distances(coords, scor):
             distance += abs(coords[i][1] - col)
             count += 1
         scor += distance
+    print(count)
     return scor
 
 

@@ -1,9 +1,8 @@
-## Advent of Code 2023
+## Advent of Code
 
-All puzzles from 2023 edition of Advent of Code
+Having fun solving programing puzzles in a reasonably smart way
 
 
-[Advent of Code 2023](https://adventofcode.com)
-
-Currently suspended due to lack of time for a solving them in a proper way
+[Advent of Code 2023] (https://adventofcode.com/2023)
+[Advent of Code 2024] (https://adventofcode.com/2024)
 

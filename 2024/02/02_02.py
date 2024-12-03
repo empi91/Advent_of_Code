@@ -12,6 +12,7 @@ with open('puzzle_input') as file:
 
         reports.append(raport)
 
+
 def check_report(report):
     decreasing = False
     increasing = False

@@ -13,12 +13,11 @@ with open('puzzle_input') as file:
 
 
 for i, row in enumerate(area):
-    for j, column in enumerate(area[i]):
-        if area[i][j] != '.':
-            if not antennas[area[i][j]]:
-                antennas[area[i][j]] = [(i, j)]
-            else:
-                antennas[area[i][j]].append((i, j))
+    for j, char in enumerate(row):
+        if char != '.':
+            if not antennas[char]:
+                antennas[char] = []
+            antennas[char].append((i, j))
 
 
 for antenna_type, antenna_locations in antennas.items():
